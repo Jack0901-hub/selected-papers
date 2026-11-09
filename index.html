@@ -1,0 +1,166 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <title>精选论文 · 书海拾贝</title>
+  <meta name="description" lang="zh-CN" content="精选论文列表，可按学科和语言筛选，并按点击次数浏览。" />
+  <meta name="description" lang="en" content="Selected papers, filterable by subject and language, sorted by clicks." />
+  <meta name="robots" content="index, follow" />
+  <meta name="color-scheme" content="dark light" />
+  <meta name="theme-color" content="#2a241e" />
+  <link rel="icon" href="assets/logo-mark.png" type="image/png" />
+  <script>
+    (function () {
+      try {
+        var savedTheme = localStorage.getItem("ebook-vault-theme");
+        var theme = savedTheme === "light" ? "light" : "dark";
+        document.documentElement.setAttribute("data-theme", theme);
+      } catch (e) {
+        document.documentElement.setAttribute("data-theme", "dark");
+      }
+      var lang = "zh-CN";
+      try {
+        var savedLang = localStorage.getItem("ebook-vault-lang");
+        if (savedLang === "en" || savedLang === "zh-CN") lang = savedLang;
+      } catch (e2) {}
+      document.documentElement.lang = lang;
+      document.documentElement.setAttribute("data-lang", lang === "zh-CN" ? "zh" : "en");
+      if (lang === "zh-CN") document.documentElement.setAttribute("data-i18n-pending", "1");
+      document.title = lang === "zh-CN" ? "精选论文 · 书海拾贝" : "Selected Papers · Ebook Vault";
+    })();
+  </script>
+  <style>html[data-i18n-pending] body{visibility:hidden}</style>
+  <link rel="stylesheet" href="assets/style.css" />
+</head>
+<body class="papers-page search-only">
+  <a class="skip-link" href="#grid" data-i18n="skip">Skip to books</a>
+
+  <header class="topbar">
+    <div class="topbar-inner">
+      <a class="brand" href="index.html">
+        <img class="brand-mark" src="assets/logo-mark.png" alt="" width="26" height="26" />
+        <span class="brand-text">
+          <span class="brand-name" data-i18n="brandShort">书海拾贝</span>
+        </span>
+      </a>
+      <nav class="header-nav" aria-label="主导航" data-i18n-aria="mainNavAria">
+        <a class="header-papers" href="index.html" aria-current="page" data-i18n="papersButton" data-i18n-aria="papersButton" aria-label="论文">论文</a>
+      </nav>
+      <div class="header-tools">
+        <div class="lang-switch" id="lang-switch">
+          <button type="button" class="lang-btn" id="lang-toggle" data-lang="en" aria-label="Switch to English" title="Switch to English">EN</button>
+        </div>
+        <button type="button" class="theme-toggle" id="theme-toggle"
+                aria-label="Switch to dark mode" title="Switch to dark mode" aria-pressed="false">🌙</button>
+      </div>
+    </div>
+  </header>
+
+  <div class="search-well">
+    <div class="search" role="search">
+      <svg class="search-icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+        <circle cx="11" cy="11" r="7" fill="none" stroke="currentColor" stroke-width="2"></circle>
+        <path d="m16.5 16.5 4 4" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"></path>
+      </svg>
+      <input id="q" class="search-input" type="search" inputmode="search"
+             placeholder="搜索精选论文的标题或学科"
+             data-i18n-placeholder="papersSearchPlaceholder"
+             aria-label="搜索精选论文的标题、作者或学科"
+             data-i18n-aria="papersSearchAria"
+             autocomplete="off" autocapitalize="off" spellcheck="false" enterkeyhint="search" />
+      <kbd class="kbd" aria-hidden="true">/</kbd>
+    </div>
+  </div>
+
+  <noscript>
+    <div class="noscript">Search needs JavaScript. Enable JavaScript and refresh. 本站的实时搜索依赖 JavaScript，请在浏览器中启用 JavaScript 后刷新页面。</div>
+  </noscript>
+
+  <main class="layout">
+    <section class="content" aria-label="Selected papers" data-i18n-aria="contentAria">
+      <section class="papers-filters" id="papers-filters" aria-label="筛选条件" data-i18n-aria="filtersAria">
+        <div class="papers-title-row">
+          <h1 class="papers-page-title"><span data-i18n="pickedTitle">精选论文</span><span class="papers-count"><span class="papers-count-gap" data-i18n="papersCountGap">  </span><span data-i18n="papersCountLead">共</span><strong id="papers-total">0</strong><span data-i18n="papersCountTail"> 篇</span></span></h1>
+          <button type="button" class="papers-filter-open" id="papers-filter-open" hidden
+                  aria-haspopup="dialog" aria-controls="papers-filter-modal" aria-expanded="false"
+                  data-i18n-aria="filtersAria" aria-label="筛选条件">
+            <span data-i18n="filtersOpen">筛选</span><span class="papers-filter-count" id="papers-filter-count" hidden></span><span class="papers-filter-caret" aria-hidden="true"></span>
+          </button>
+          <div class="papers-year" id="papers-year">
+            <button type="button" class="papers-year-btn" id="papers-year-btn" aria-haspopup="listbox" aria-expanded="false" aria-controls="papers-year-menu" data-i18n-aria="papersYear" aria-label="年份">
+              <span id="papers-year-label">全部</span>
+              <span class="papers-year-caret" aria-hidden="true"></span>
+            </button>
+            <div class="papers-year-menu" id="papers-year-menu" role="listbox" hidden></div>
+          </div>
+        </div>
+        <div class="chips" id="papers-subjects"></div>
+        <button type="button" class="link-btn papers-clear" id="papers-clear" data-i18n="papersClear" disabled>清空筛选</button>
+      </section>
+
+      <div class="toolbar" hidden>
+        <p class="count" id="result-count" aria-live="polite">
+          <span id="count-search" class="count-search" hidden><span id="count-filtered-lead" class="count-filtered-lead"></span><strong id="count-filtered"></strong><span id="count-tail"></span></span>
+        </p>
+      </div>
+
+      <div class="loading" id="loading" data-i18n="loading">正在加载书籍数据…</div>
+
+      <div class="grid" id="grid"></div>
+
+      <div class="empty" id="empty" hidden>
+        <p class="empty-title" id="empty-title" data-i18n="emptyTitle">没有找到相关结果</p>
+        <p class="empty-hint" id="empty-hint" data-i18n="papersEmptyHint">试试其他学科，或更短的关键词。</p>
+        <button type="button" class="btn primary" id="empty-reset" data-i18n="emptyReset">清空搜索</button>
+        <button type="button" class="btn primary" id="empty-retry" hidden data-i18n="retry">重试</button>
+      </div>
+
+      <div class="load-more-wrap">
+        <button type="button" class="btn load-more" id="load-more" hidden data-i18n="loadMore">加载更多</button>
+      </div>
+
+      <div class="papers-pager" id="papers-pager" hidden>
+        <button type="button" class="btn papers-pager-btn" id="papers-prev" data-i18n="papersPrev">上一页</button>
+        <span class="papers-pager-info" id="papers-page-info"></span>
+        <button type="button" class="btn papers-pager-btn" id="papers-next" data-i18n="papersNext">下一页</button>
+      </div>
+    </section>
+  </main>
+
+  <footer id="footer" class="site-footer">
+    <div class="footer-inner">
+      <p class="footer-notice">
+        <span data-i18n="footerNoticeLead">本站发布的内容若侵犯到您的权益，</span><span data-i18n="footerContact">请联系我们</span><span data-i18n="footerNoticeTail">，我们将及时处理！</span>
+      </p>
+      <p class="footer-notice" data-i18n="footerCrawler">以上内容由网络爬虫自动抓取，以非人工方式自动生成。书海拾贝不储存、复制、传播任何文件。</p>
+    </div>
+  </footer>
+
+  <button type="button" class="to-top" id="to-top" aria-label="Back to top" title="Back to top" data-i18n-aria="toTop" data-i18n-title="toTop">↑</button>
+
+  <div class="toast" id="toast" role="status" aria-live="polite" hidden></div>
+
+  <script src="assets/papers-feed.js"></script>
+  <script src="assets/app.js"></script>
+  <script>
+/* 支持 ?q=关键词 深链：进入页面后自动执行该页自己的搜索 */
+(function(){
+  var q="";
+  try{ q=(new URLSearchParams(location.search).get("q")||"").trim(); }catch(e){}
+  if(!q) return;
+  var tries=0;
+  function run(){
+    var el=document.getElementById("q");
+    if(!el){ if(++tries<30) return setTimeout(run,120); return; }
+    if(el.value!==q) el.value=q;
+    el.dispatchEvent(new Event("input",{bubbles:true}));
+    el.dispatchEvent(new Event("search",{bubbles:true}));
+    if(++tries<6) setTimeout(run,220);
+  }
+  if(document.readyState==="loading") document.addEventListener("DOMContentLoaded",run); else run();
+})();
+</script>
+<script src="assets/nav-scroll.js" defer></script>
+</body>
+</html>

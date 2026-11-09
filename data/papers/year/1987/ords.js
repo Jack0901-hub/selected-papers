@@ -1,0 +1,1 @@
+window.EBOOK_PAPERS=window.EBOOK_PAPERS||{};window.EBOOK_PAPERS["year/1987/ords"]=[2177,8045,8046,8047];
